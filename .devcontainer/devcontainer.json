@@ -1,0 +1,45 @@
+{
+    "name": "My Dev Container",
+    "build": {
+      "dockerfile": "Dockerfile",
+      "args": {
+        "USERNAME": "vscode",
+        "USER_UID": "1001", // change this value to match your `$ id` output
+        "USER_GID": "1001",
+        "PROXY_USER": "${localEnv:proxy_username}",
+        "PROXY_PASSWORD": "${localEnv:proxy_password}",
+        "PROXY_HOST": "${localEnv:proxy_host}",
+        "PROXY_PORT": "${localEnv:proxy_port}",
+        "NO_PROXY_PIPE_DELIMITED": "localhost|127.0.0.1|*amazonaws.com|169.254.169.254|amazonaws.com|*.aws",
+        "NO_PROXY_COMMA_SEPARATED": "localhost,127.0.0.1,*amazonaws.com,169.254.169.254,amazonaws.com,*.aws"
+      }
+    },
+    "forwardPorts": [],
+    "customizations": {
+      "vscode": {
+        "extensions": [
+            "vscjava.vscode-java-pack",
+            "ms-azuretools.vscode-docker",
+            "vscjava.vscode-java-test",
+            "vscjava.vscode-java-debug",
+            "vscjava.vscode-maven",
+            "vscjava.vscode-spring-boot-dashboard",
+            "SonarSource.sonarlint-vscode",
+            "shengchen.vscode-checkstyle",
+            "redhat.java@1.25.2023111603",
+            "redhat.fabric8-analytics"
+        ],
+        "settings": {
+          "terminal.integrated.shell.linux": "/bin/bash",
+          "java.jdt.ls.vmargs": "-Xmx8G -Xms8G"
+        }
+      }
+    },
+    "mounts": [
+      // replace these folders with real values; can't use `~/` here
+      "source=/home/YOUR_USERNAME/.m2,target=/home/vscode/.m2,type=bind,consistency=cached",
+      "source=/home/YOUR_USERNAME/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached,readonly"
+    ],
+    "postCreateCommand": "mvn -v",
+    "remoteUser": "vscode"
+}
