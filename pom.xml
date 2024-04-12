@@ -78,6 +78,8 @@
 		<commons.lang.version>2.3</commons.lang.version>
 		<shade.plugin.version>2.4.3</shade.plugin.version>
 		<mainClass>zingg.client.Client</mainClass>
+		<hadoop.common.version>3.3.6</hadoop.common.version>
+		<aws.java.sdk.version>1.12.674</aws.java.sdk.version>
 	</properties>
 
 	<repositories>

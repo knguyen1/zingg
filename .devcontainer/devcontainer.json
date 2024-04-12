@@ -27,7 +27,9 @@
             "SonarSource.sonarlint-vscode",
             "shengchen.vscode-checkstyle",
             "redhat.java@1.25.2023111603",
-            "redhat.fabric8-analytics"
+            "redhat.fabric8-analytics",
+            "georgewfraser.vscode-javac",
+            "donjayamanne.javadebugger"
         ],
         "settings": {
           "terminal.integrated.shell.linux": "/bin/bash",
@@ -37,8 +39,9 @@
     },
     "mounts": [
       // replace these folders with real values; can't use `~/` here
-      "source=/home/YOUR_USERNAME/.m2,target=/home/vscode/.m2,type=bind,consistency=cached",
-      "source=/home/YOUR_USERNAME/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached,readonly"
+      "source=/home/kynguyen/.m2,target=/home/vscode/.m2,type=bind,consistency=cached",
+      "source=/home/kynguyen/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached,readonly",
+      "source=/home/kynguyen/.aws,target=/home/vscode/.aws,type=bind,consistency=cached,readonly"
     ],
     "postCreateCommand": "mvn -v",
     "remoteUser": "vscode"

@@ -1,6 +1,8 @@
 package zingg.common.client;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,6 +12,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.Path;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.json.JsonWriteFeature;
@@ -58,21 +64,25 @@ public class ArgumentsUtil {
 	 * @throws ZinggClientException
 	 *             in case of invlaid/wrong json/file not found
 	 */
-	public IArguments createArgumentsFromJSON(String filePath, String phase)
+	public IArguments createArgumentsFromJSON(final String filePath, final String phase)
 			throws ZinggClientException {
 		try {
-			ObjectMapper mapper = new ObjectMapper();
+			final ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS,
 					true);
 			LOG.warn("Config Argument is " + filePath);
-			/*SimpleModule module = new SimpleModule();
-			module.addDeserializer(List<MatchType>.class, new FieldDefinition.MatchTypeDeserializer());
-			mapper.registerModule(module);
-			*/
-			IArguments args = mapper.readValue(new File(filePath), argsClass);
-			LOG.warn("phase is " + phase);
-			checkValid(args, phase);
-			return args;			
+			
+			final Configuration configuration = new Configuration();
+			configuration.set("fs.s3a.aws.credentials.provider", "com.amazonaws.auth.DefaultAWSCredentialsProviderChain");
+			final FileSystem fileSystem = FileSystem.get(URI.create(filePath), configuration);
+			final Path path = new Path(filePath);
+			try (final FSDataInputStream inStream = fileSystem.open(path)) {
+
+				final IArguments arguments = mapper.readValue((InputStream)inStream, argsClass);
+				LOG.warn("phase is " + phase);
+				checkValid(arguments, phase);
+				return arguments;
+			}
 		} catch (Exception e) { 
 			//e.printStackTrace();
 			throw new ZinggClientException("Unable to parse the configuration at " + filePath + 
